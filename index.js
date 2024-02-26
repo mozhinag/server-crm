@@ -6,7 +6,7 @@ const bodyparser = require('body-parser')
 require('dotenv').config();
 const { MongoClient } = require('mongodb');
 
-app.use(cors({ origin: '*' }));
+app.use(cors({ origin: 'https://bespoke-cucurucho-32bb1e.netlify.app/' }));
 const URL = process.env.URL;
 const PORT = process.env.PORT;
 
