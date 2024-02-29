@@ -17,14 +17,14 @@ router.post('/register', async (req, res) => {
     const connection = await MongoClient.connect(URL);
     const db = connection.db('crm');
 
-    // Check if user already exists
+ 
     let user = await db.collection('users').findOne({ username });
     if (user) {
       connection.close();
       return res.status(400).json({ msg: 'User already exists' });
     }
 
-    // Hash password and create new user
+
     const hashedPassword = await bcrypt.hash(password, 10);
     const result = await db.collection('users').insertOne({
       username,
@@ -33,10 +33,9 @@ router.post('/register', async (req, res) => {
       role
     });
 
-    // Close the database connection
     connection.close();
 
-    // Prepare payload for JWT
+ 
     const payload = {
       user: {
         id: result.insertedId,
@@ -44,7 +43,7 @@ router.post('/register', async (req, res) => {
       },
     };
 
-  // Generate JWT token
+ 
     jwt.sign(
       payload,
       process.env.JWT_SECRET,
@@ -61,19 +60,17 @@ router.post('/register', async (req, res) => {
 }
 });
 
-// Route to get a list of all users
+
 router.get('/users', async (req, res) => {
   try {
     const connection = await MongoClient.connect(URL);
     const db = connection.db('crm');
 
-    // Fetch all users from the 'users' collection
+    
     const usersList = await db.collection('users').find({}).toArray();
 
-    // Close the database connection
     connection.close();
 
-    // Send the list of users as a response
     res.json(usersList);
   } catch (err) {
     console.error(err.message);
@@ -109,7 +106,7 @@ router.post('/login', async (req, res) => {
       },
     };
 
-    // Generate JWT token and respond in a single place
+
     jwt.sign(
       payload,
       JWT_SECRET,
@@ -119,15 +116,14 @@ router.post('/login', async (req, res) => {
           connection.close();
           throw err;
         }
-        // Send the token and user's role in the response
-        // Note: Spread operator (...) cannot be used directly on the user object as it may contain sensitive information like password
+        
         res.json({ 
           token, 
           user: { 
             role: user.role, 
             username: user.username, 
             email: user.email,
-            // include any other user fields you need but exclude the password
+      
           } 
         });
         connection.close();
